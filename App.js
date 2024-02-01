@@ -1,13 +1,24 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, Image, SafeAreaView, View } from 'react-native';
+import { StyleSheet, Text, Image, SafeAreaView, View, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react'; 
 
-export default function App() {
+const App = () => {
+
+  const [currentImage, setCurrentImage] = useState('image1');
+
+  const handlePress = () => {
+    setCurrentImage(prevImage => prevImage === 'image1' ? 'image2' : 'image1');
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Red Bobsta</Text>
-      <Image source = {require("./assets/redbobsta.jpg")}/>
-      <StatusBar style="auto" />
-    </View>
+    <TouchableOpacity onPress={handlePress}>
+      <Image
+        source={currentImage === 'image1' ? require('./assets/redbobsta.jpg') : require('./assets/saitama.jpg')}
+        style={{ 
+          height: 300,
+          width: 300}}
+      />
+    </TouchableOpacity>
   );
 }
 
@@ -19,3 +30,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default App;
