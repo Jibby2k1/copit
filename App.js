@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, Image, SafeAreaView, View } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Text>Red Bobsta</Text>
+      <Image source = {require("./assets/redbobsta.jpg")}/>
       <StatusBar style="auto" />
     </View>
   );
