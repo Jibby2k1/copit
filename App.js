@@ -3,12 +3,15 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native';
 import Taskbar from './Taskbar'; // Import the Taskbar component
+import SwipableImages from './Swiper';
 
 export default function App() {
 
   return (
     <SafeAreaView style={styles.background}>
-      <Text style={styles.backgroundText}>Welcome To Copit</Text>
+      {//<Text style={styles.backgroundText}>Welcome To Copit</Text>//}
+      }
+      <SwipableImages />
       <Taskbar style={styles.taskbar}/>
     </SafeAreaView>
   );

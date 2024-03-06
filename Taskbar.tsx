@@ -19,7 +19,7 @@ const ExpandableButton = () => {
     <View style={styles.buttonContainer}>
       <TouchableOpacity onPress={toggleExpand}>
         <Animated.View style={[styles.expandableButton, { width: widthAnim }]}>
-          <Text style={styles.buttonText}>{isExpanded ? 'Close' : 'Expand'}</Text>
+          <Text style={styles.buttonText}>{isExpanded ? 'Close' : 'E'}</Text>
         </Animated.View>
       </TouchableOpacity>
     </View>
