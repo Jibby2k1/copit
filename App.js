@@ -1,18 +1,39 @@
 // App.js
-
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, StyleSheet, useAnimatedValue } from 'react-native';
 import Taskbar from './Taskbar'; // Import the Taskbar component
 import SwipableImages from './Swiper';
+import MessagingComponent from './Messenger';
+import LikedComponent from './Wishlist';
+import ProfileComponent from './Profile';
+import SettingsComponent from './Settings';
+
 
 export default function App() {
+  const [currentpage, setCurrentPage] = useState('SwipableImages');
+
+  const renderPage = () => {
+    switch (currentpage) {
+      case 'SwipableImages':
+        return <SwipableImages />;
+      case 'Messaging':
+        return <MessagingComponent />;
+      case 'Liked':
+        return <LikedComponent />;
+      case 'Profile':
+        return <ProfileComponent />;
+      case 'Settings':
+        return <SettingsComponent />;
+        
+      default:
+        return <SwipableImages />;
+    }
+  };
 
   return (
     <SafeAreaView style={styles.background}>
-      {//<Text style={styles.backgroundText}>Welcome To Copit</Text>//}
-      }
-      <SwipableImages />
-      <Taskbar style={styles.taskbar}/>
+      {renderPage()}
+      <Taskbar style={styles.taskbar} changePage={setCurrentPage}/>
     </SafeAreaView>
   );
 };

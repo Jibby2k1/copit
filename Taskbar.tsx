@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import NavButton from './NavButton';
 
-const ExpandableTaskbar = () => {
+const ExpandableTaskbar = ({ changePage }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const widthAnim = useRef(new Animated.Value(50)).current; // Initial width value (50 in this example)
 
@@ -18,36 +18,44 @@ const ExpandableTaskbar = () => {
 
   return (
     <View style={styles.buttonContainer}>
-      <TouchableOpacity onPress={toggleExpand}>
+      <TouchableOpacity>
         <Animated.View style={[styles.ExpandableTaskbar, { width: widthAnim, justifyContent: isExpanded? 'space-between': 'center'}]}>
         {isExpanded && (
         <>
         <NavButton
           isActive={isExpanded}
           image={require('./assets/Taskbar/profile.png')} // Adjust the path as needed
-          onPress={ () => {console.log('Profile button pressed')}}
+          onPress={ () => changePage('Profile') }
         />
         <NavButton
           isActive={isExpanded}
           image={require('./assets/Taskbar/shop.png')} // Adjust the path as needed
-          onPress={ () => {console.log('Shop button pressed')}}
+          onPress={ () => changePage('SwipableImages') }
         />
         <NavButton
           isActive={isExpanded}
           image={require('./assets/Taskbar/chat.png')} // Adjust the path as needed
-          onPress={ () => {console.log('Chat button pressed')}}
+          onPress={ () => changePage('Messaging') }
         />
         <NavButton
           isActive={isExpanded}
           image={require('./assets/Taskbar/like.png')} // Adjust the path as needed
-          onPress={ () => {console.log('Liked button pressed')}}
+          onPress={ () => changePage('Liked') }
         />
+        <NavButton
+            isActive={isExpanded}
+            image={require('./assets/Taskbar/settings.png')} // Adjust the path as needed
+            onPress={ () => changePage('Settings') }
+          />
         </>
         )}
         <NavButton
             isActive={isExpanded}
-            image={require('./assets/Taskbar/settings.png')} // Adjust the path as needed
-            onPress={ () => {console.log('Button pressed')}}
+            image={require('./assets/Taskbar/vdots.png')} // Adjust the path as needed
+            onPress={ () => {
+              toggleExpand();
+              console.log('Taskbar button pressed');
+            }}
           />
           
         </Animated.View>
