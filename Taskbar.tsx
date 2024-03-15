@@ -1,3 +1,4 @@
+//Taskbar.tsx
 import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import NavButton from './NavButton';
