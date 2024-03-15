@@ -116,9 +116,15 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ cardStyle: { backgroundColor: 'black' } }}>
         {user ? 
-          <Stack.Screen options={{headerShown: false}} name="Inside" component={InsideLayout}/> 
+          <Stack.Screen 
+            options={{
+              headerShown: false,
+            }} 
+            name="Inside" 
+            component={InsideLayout}
+          /> 
           : 
           <Stack.Screen options={{headerShown: false}} name="Login" component={Login}/>
         }

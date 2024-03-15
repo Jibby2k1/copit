@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Text, TextInput, Button, StyleSheet, View } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 const MessagingComponent = () => {
   const [message, setMessage] = useState('');
@@ -11,7 +12,7 @@ const MessagingComponent = () => {
   };
 
   return (
-    <View>
+    <View style={styles.background}>
       <Text style={styles.text}>Messaging Component</Text>
       <TextInput
         style={styles.input}
@@ -25,6 +26,12 @@ const MessagingComponent = () => {
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   text: {
     color: 'white',
   },

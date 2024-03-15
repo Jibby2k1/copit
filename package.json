@@ -11,6 +11,7 @@
   "dependencies": {
     "@react-native-firebase/app": "^19.0.1",
     "@react-native-firebase/auth": "^19.0.1",
+    "@react-native-firebase/messaging": "^19.0.1",
     "@react-navigation/bottom-tabs": "^6.5.19",
     "@react-navigation/native": "^6.1.16",
     "@react-navigation/native-stack": "^6.9.25",

@@ -10,7 +10,7 @@ const SwipableImages = () => {
   ];
 
   return (
-    <Swiper style={styles.wrapper} showsButtons={false}>
+    <Swiper style={styles.wrapper} showsButtons={false} showsPagination={false}>
       {images.map((image, index) => (
         <View key={index} style={styles.slide}>
           <Image source={image} style={styles.image} />
@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
   wrapper: {},
   slide: {
     flex: 1,
+    backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
   },
