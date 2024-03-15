@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, StyleSheet, Image, Button, View } from 'react-native';
 
 const ProfileComponent = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Add this state
+
   const editProfile = () => {
     // Add the code to edit the profile here
   };
@@ -14,9 +16,9 @@ const ProfileComponent = () => {
     <View>
       <Image
         style={styles.profilePicture}
-        source={{ uri: 'https://example.com/profile-picture.jpg' }} // Replace with the URL of the profile picture
+        source={{ uri: 'https://example.com/profile-picture.jpg' }}
       />
-      <Text style={styles.text}>Biography</Text> // Replace with the actual biography
+      <Text style={styles.text}>Biography</Text>
       <Button title="Edit Profile" onPress={editProfile} />
       <Button title="Post" onPress={post} />
     </View>
@@ -32,6 +34,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
   },
+  
 });
 
 export default ProfileComponent;
