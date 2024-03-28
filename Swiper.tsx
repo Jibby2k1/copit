@@ -4,8 +4,12 @@ import Swiper from 'react-native-swiper';
 
 const SwipableImages = () => {
   const images = [
-    require('./assets/redbobsta.jpg'),
-    require('./assets/saitama.jpg'),
+    require('./assets/dress.jpg'),
+    require('./assets/hat.jpg'),
+    require('./assets/Jacket.jpg'),
+    require('./assets/pants.jpg'),
+    require('./assets/shirt2.jpg'),
+    require('./assets/shirts.jpg'),
     // Add more images as needed
   ];
 
@@ -13,7 +17,7 @@ const SwipableImages = () => {
     <Swiper style={styles.wrapper} showsButtons={false} showsPagination={false}>
       {images.map((image, index) => (
         <View key={index} style={styles.slide}>
-          <Image source={image} style={styles.image} />
+          <Image source={image} style={styles.image} resizeMode="contain"/>
         </View>
       ))}
     </Swiper>
@@ -31,8 +35,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: width,
-    height: width, // Set your desired height
+    width: '100%',
+    height: undefined,
+    aspectRatio: 1, // Assuming the images are square
   },
 });
 

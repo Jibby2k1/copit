@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where, getDocs } from 'firebase/firestore';
 import { FIREBASE_STORE } from './firebase'; // import FIREBASE_STORE and firebase from firebase.js
 
 const MessagingComponent = ({ route }) => {
   const { user } = route.params;
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [username, setUsername] = useState(''); // New state for the input text
   const [sentMessages, setSentMessages] = useState([]);
-const [receivedMessages, setReceivedMessages] = useState([]);
+  const [receivedMessages, setReceivedMessages] = useState([]);
   const [receiverId, setReceiverId] = useState('');
 
   useEffect(() => {
@@ -38,6 +39,20 @@ const [receivedMessages, setReceivedMessages] = useState([]);
     setMessages(combinedMessages);
   }, [sentMessages, receivedMessages]);
 
+  
+  async function getReceiverUidByUsername(username) {
+    const usersRef = collection(FIREBASE_STORE, 'users');
+    const q = query(usersRef, where('username', '==', username));
+    const querySnapshot = await getDocs(q);
+  
+    let receiverUid = '';
+    querySnapshot.forEach((doc) => {
+      receiverUid = doc.id;
+    });
+  
+    return receiverUid;
+  }
+
   const sendMessage = async () => {
     if (user) {
       const newMessage = {
@@ -63,9 +78,13 @@ const [receivedMessages, setReceivedMessages] = useState([]);
     <View style={styles.container}>
         <TextInput
           style={styles.receiverInput}
-          value={receiverId}
-          onChangeText={setReceiverId}
-          placeholder="Enter receiver ID"
+          value={username}
+          onChangeText={async (text) => {
+            setUsername(text);
+            const uid = await getReceiverUidByUsername(text);
+            setReceiverId(uid); // Only update the receiverId state if a valid UID is returned
+          }}
+          placeholder="Enter receiver username"
         />
         <ScrollView>
           {receiverId && messages.map((message, index) => (
