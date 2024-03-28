@@ -8,7 +8,6 @@ const LikedComponent = () => {
     { id: '3', name: 'Jacket', price: '$120.00', picture: require('./assets/Jacket.jpg') },
 
   ];
-
   
   return (
     <View style={styles.background}>
