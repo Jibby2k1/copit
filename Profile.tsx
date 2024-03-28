@@ -6,42 +6,24 @@ import { FIREBASE_STORE } from './firebase';
 import { launchImageLibrary}  from 'react-native-image-picker';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where, doc, setDoc} from 'firebase/firestore';
-import { Blob } from 'react-native-fetch-blob';
+import { RNFetchBlob } from 'rn-fetch-blob';
+import * as ImagePicker from 'expo-image-picker';
 
+const dirs = RNFetchBlob.fs.dirs;
+const path = `${dirs.DownloadDir}/file.txt`; // path where the file will be downloaded
 
-const post = () => {
-  // Step 1: Open the image picker
-  launchImageLibrary({}, async (response) => {
-    if (response.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (response.error) {
-      console.log('ImagePicker Error: ', response.error);
-    } else {
-      const {uri} = response;
-
-      // Convert the URI to a Blob
-      const blob = await Blob.build(uri, { type: 'image/jpeg' });
-
-      // Step 2: Upload the image to Firebase Storage
-      const responsePath = uri.substring(uri.lastIndexOf('/') + 1);
-      const imageRef = ref(FIREBASE_STORAGE, responsePath);
-      await uploadBytesResumable(imageRef, blob);
-
-      // Step 3: Get the download URL
-      const url = await getDownloadURL(imageRef);
-
-      // Step 4: Save a new document in Firestore with the download URL
-      const postRef = doc(FIREBASE_STORE, 'posts', 'newPostId'); // Replace 'newPostId' with your post ID
-      await setDoc(postRef, {
-        imageUrl: url,
-        // Add other post data as needed
-      });
-
-      // Close the blob
-      blob.close();
-    }
+RNFetchBlob.config({
+  fileCache: true,
+  path: path,
+})
+  .fetch('GET', 'https://example.com/file.txt')
+  .then((res) => {
+    console.log('File downloaded to', res.path());
+  })
+  .catch((error) => {
+    console.error(error);
   });
-};
+
 const ProfileComponent = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Add this state
 
@@ -51,24 +33,28 @@ const ProfileComponent = () => {
 
   const post = () => {
     // Step 1: Open the image picker
-    launchImageLibrary({}, async (response) => {
+    launchImageLibrary({mediaType: 'mixed'}, async (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+      } else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorMessage);
       } else {
-        const {uri} = response;
-        
+        const {uri} = response.assets[0];
+  
+        // Convert the URI to a Blob
+        const responseFetch = await fetch(uri);
+        const blob = await responseFetch.blob();
+  
         // Step 2: Upload the image to Firebase Storage
         const responsePath = uri.substring(uri.lastIndexOf('/') + 1);
         const imageRef = ref(FIREBASE_STORAGE, responsePath);
-        await uploadBytesResumable(imageRef, uri);
-        
+        await uploadBytesResumable(imageRef, blob);
+  
         // Step 3: Get the download URL
         const url = await getDownloadURL(imageRef);
-        
+  
         // Step 4: Save a new document in Firestore with the download URL
-        const postRef = doc(FIREBASE_STORE, 'posts', 'newPostId');
+        const postRef = doc(FIREBASE_STORE, 'posts', 'newPostId'); // Replace 'newPostId' with your post ID
         await setDoc(postRef, {
           imageUrl: url,
           // Add other post data as needed
