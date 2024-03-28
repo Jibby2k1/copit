@@ -14,6 +14,8 @@ import Login from './screens/Login';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './firebase';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ProductListing from './productListing';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -102,7 +104,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ cardStyle: { backgroundColor: 'black' } }}>
-        {user ? 
+      {user ? 
+        <>
           <Stack.Screen 
             options={{
               headerShown: false,
@@ -110,10 +113,18 @@ export default function App() {
             name="Inside" 
             component={InsideLayout}
             initialParams={{ user: user }} // pass the user state as a prop
-          /> 
-          : 
-          <Stack.Screen options={{headerShown: false}} name="Login" component={Login}/>
-        }
+          />
+          <Stack.Screen 
+            options={{
+              headerShown: false,
+            }} 
+            name="ProductListing" 
+            component={ProductListing}
+          />
+        </>
+        : 
+        <Stack.Screen options={{headerShown: false}} name="Login" component={Login}/>
+      }
       </Stack.Navigator>
     </NavigationContainer>
   );

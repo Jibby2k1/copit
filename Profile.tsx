@@ -6,61 +6,19 @@ import { FIREBASE_STORE } from './firebase';
 import { launchImageLibrary}  from 'react-native-image-picker';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where, doc, setDoc} from 'firebase/firestore';
-import { RNFetchBlob } from 'rn-fetch-blob';
+import RNFetchBlob from 'rn-fetch-blob';
 import * as ImagePicker from 'expo-image-picker';
+import { useNavigation } from '@react-navigation/native';
+import ProductListing from './productListing';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-const dirs = RNFetchBlob.fs.dirs;
-const path = `${dirs.DownloadDir}/file.txt`; // path where the file will be downloaded
-
-RNFetchBlob.config({
-  fileCache: true,
-  path: path,
-})
-  .fetch('GET', 'https://example.com/file.txt')
-  .then((res) => {
-    console.log('File downloaded to', res.path());
-  })
-  .catch((error) => {
-    console.error(error);
-  });
 
 const ProfileComponent = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Add this state
+  const [isPosting, setIsPosting] = useState(false);
 
   const editProfile = () => {
     // Add the code to edit the profile here
-  };
-
-  const post = () => {
-    // Step 1: Open the image picker
-    launchImageLibrary({mediaType: 'mixed'}, async (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorMessage);
-      } else {
-        const {uri} = response.assets[0];
-  
-        // Convert the URI to a Blob
-        const responseFetch = await fetch(uri);
-        const blob = await responseFetch.blob();
-  
-        // Step 2: Upload the image to Firebase Storage
-        const responsePath = uri.substring(uri.lastIndexOf('/') + 1);
-        const imageRef = ref(FIREBASE_STORAGE, responsePath);
-        await uploadBytesResumable(imageRef, blob);
-  
-        // Step 3: Get the download URL
-        const url = await getDownloadURL(imageRef);
-  
-        // Step 4: Save a new document in Firestore with the download URL
-        const postRef = doc(FIREBASE_STORE, 'posts', 'newPostId'); // Replace 'newPostId' with your post ID
-        await setDoc(postRef, {
-          imageUrl: url,
-          // Add other post data as needed
-        });
-      }
-    });
   };
 
   // Rest of your component
@@ -86,8 +44,8 @@ const ProfileComponent = () => {
         <Text style={styles.buttonText}>Transaction History</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Product Listings</Text>
+      <TouchableOpacity style={styles.button} onPress={showProductListings}>
+      <Text style={styles.buttonText}>Product Listings</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => FIREBASE_AUTH.signOut()}>
