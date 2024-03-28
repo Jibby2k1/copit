@@ -25,7 +25,6 @@ const LikedComponent = () => {
     { id: '19', name: 'Gloves', price: '$19.99' },
     { id: '20', name: 'Tie', price: '$29.99' },
   ];
-
   
   return (
     <View style={styles.background}>

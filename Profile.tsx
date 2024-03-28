@@ -1,7 +1,47 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, Image, TouchableOpacity, View, Dimensions} from 'react-native';
 import { FIREBASE_AUTH } from './firebase';
+import { FIREBASE_STORAGE } from './firebase';
+import { FIREBASE_STORE } from './firebase';
+import { launchImageLibrary}  from 'react-native-image-picker';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, where, doc, setDoc} from 'firebase/firestore';
+import { Blob } from 'react-native-fetch-blob';
 
+
+const post = () => {
+  // Step 1: Open the image picker
+  launchImageLibrary({}, async (response) => {
+    if (response.didCancel) {
+      console.log('User cancelled image picker');
+    } else if (response.error) {
+      console.log('ImagePicker Error: ', response.error);
+    } else {
+      const {uri} = response;
+
+      // Convert the URI to a Blob
+      const blob = await Blob.build(uri, { type: 'image/jpeg' });
+
+      // Step 2: Upload the image to Firebase Storage
+      const responsePath = uri.substring(uri.lastIndexOf('/') + 1);
+      const imageRef = ref(FIREBASE_STORAGE, responsePath);
+      await uploadBytesResumable(imageRef, blob);
+
+      // Step 3: Get the download URL
+      const url = await getDownloadURL(imageRef);
+
+      // Step 4: Save a new document in Firestore with the download URL
+      const postRef = doc(FIREBASE_STORE, 'posts', 'newPostId'); // Replace 'newPostId' with your post ID
+      await setDoc(postRef, {
+        imageUrl: url,
+        // Add other post data as needed
+      });
+
+      // Close the blob
+      blob.close();
+    }
+  });
+};
 const ProfileComponent = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Add this state
 
@@ -10,8 +50,34 @@ const ProfileComponent = () => {
   };
 
   const post = () => {
-    // Add the code to post here
+    // Step 1: Open the image picker
+    launchImageLibrary({}, async (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        const {uri} = response;
+        
+        // Step 2: Upload the image to Firebase Storage
+        const responsePath = uri.substring(uri.lastIndexOf('/') + 1);
+        const imageRef = ref(FIREBASE_STORAGE, responsePath);
+        await uploadBytesResumable(imageRef, uri);
+        
+        // Step 3: Get the download URL
+        const url = await getDownloadURL(imageRef);
+        
+        // Step 4: Save a new document in Firestore with the download URL
+        const postRef = doc(FIREBASE_STORE, 'posts', 'newPostId');
+        await setDoc(postRef, {
+          imageUrl: url,
+          // Add other post data as needed
+        });
+      }
+    });
   };
+
+  // Rest of your component
 
   const screenWidth = Dimensions.get('window').width;
   const buttonWidth = screenWidth * 0.60;
@@ -43,7 +109,7 @@ const ProfileComponent = () => {
       </TouchableOpacity>
     </View>
   );
-};
+  };
 
 const styles = StyleSheet.create({
   background: {

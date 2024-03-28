@@ -9,7 +9,7 @@ const MessagingComponent = ({ route }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [sentMessages, setSentMessages] = useState([]);
-const [receivedMessages, setReceivedMessages] = useState([]);
+  const [receivedMessages, setReceivedMessages] = useState([]);
   const [receiverId, setReceiverId] = useState('');
 
   useEffect(() => {
