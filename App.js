@@ -19,7 +19,9 @@ const Stack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
-function InsideLayout() {
+function InsideLayout({ route }) {
+  const { user } = route.params; // get the user from the route params
+  
   return (
     <Tab.Navigator
       initialRouteName="Feed"
@@ -49,6 +51,7 @@ function InsideLayout() {
         }}
         name="Messaging"
         component={MessagingComponent}
+        initialParams={{ user: user}}
       />
       <Tab.Screen
         options={{
@@ -88,24 +91,6 @@ function InsideLayout() {
 }
 
 export default function App() {
-  // const [currentpage, setCurrentPage] = useState('SwipableImages');
-  // const renderPage = () => {
-  //   switch (currentpage) {
-  //     case 'SwipableImages':
-  //       return <SwipableImages />;
-  //     case 'Messaging':
-  //       return <MessagingComponent />;
-  //     case 'Liked':
-  //       return <LikedComponent />;
-  //     case 'Profile':
-  //       return <ProfileComponent />;
-  //     case 'Settings':
-  //       return <SettingsComponent />;
-        
-  //     default:
-  //       return <SwipableImages />;
-  //   }
-  // };
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -124,6 +109,7 @@ export default function App() {
             }} 
             name="Inside" 
             component={InsideLayout}
+            initialParams={{ user: user }} // pass the user state as a prop
           /> 
           : 
           <Stack.Screen options={{headerShown: false}} name="Login" component={Login}/>
