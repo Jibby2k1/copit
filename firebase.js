@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // Add this line
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -9,6 +10,7 @@ import { getAuth } from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyCIMe6wKeXMCHPAPGK-S3V7v7qq-ja_xlQ",
   authDomain: "copit-9e7c3.firebaseapp.com",
+  databaseURL: "https://copit-9e7c3-default-rtdb.firebaseio.com",
   projectId: "copit-9e7c3",
   storageBucket: "copit-9e7c3.appspot.com",
   messagingSenderId: "75240090252",
@@ -19,3 +21,4 @@ const firebaseConfig = {
 // Initialize Firebase
 export const FIREBASE_APP = initializeApp(firebaseConfig);
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
+export const FIREBASE_STORE = getFirestore(FIREBASE_APP); // Add this line
