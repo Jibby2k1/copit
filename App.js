@@ -114,13 +114,6 @@ export default function App() {
             component={InsideLayout}
             initialParams={{ user: user }} // pass the user state as a prop
           />
-          <Stack.Screen 
-            options={{
-              headerShown: false,
-            }} 
-            name="ProductListing" 
-            component={ProductListing}
-          />
         </>
         : 
         <Stack.Screen options={{headerShown: false}} name="Login" component={Login}/>

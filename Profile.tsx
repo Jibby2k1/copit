@@ -15,7 +15,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 const ProfileComponent = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Add this state
-  const [isPosting, setIsPosting] = useState(false);
+  const [isProductListing, setIsProductListing] = useState(false);
 
   const editProfile = () => {
     // Add the code to edit the profile here
@@ -24,9 +24,16 @@ const ProfileComponent = () => {
   // Rest of your component
 
   const screenWidth = Dimensions.get('window').width;
-  const buttonWidth = screenWidth * 0.60;
+  const buttonWidth = Number(screenWidth) * 0.60;
 
-  return (
+  return isProductListing ? (
+    <View style={styles.background}>
+      <TouchableOpacity style={styles.button} onPress={() => setIsProductListing(false)}>
+        <Text style={styles.buttonText}>Back</Text>
+      </TouchableOpacity>
+      <ProductListing />
+    </View>
+    ) : (
     <View style={styles.background}>
       <View style={styles.profileInfo}>
         <Image
@@ -44,7 +51,7 @@ const ProfileComponent = () => {
         <Text style={styles.buttonText}>Transaction History</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={showProductListings}>
+      <TouchableOpacity style={styles.button} onPress={() => setIsProductListing(true)}>
       <Text style={styles.buttonText}>Product Listings</Text>
       </TouchableOpacity>
 
@@ -52,8 +59,7 @@ const ProfileComponent = () => {
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
     </View>
-  );
-  };
+  )};
 
 const styles = StyleSheet.create({
   background: {
