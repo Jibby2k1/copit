@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FIREBASE_STORE } from './firebase';
+import { FIREBASE_STORE, FIREBASE_STORAGE } from './firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { ref, getDownloadURL } from 'firebase/storage';
 import { Image, Text, StyleSheet, View, FlatList, TouchableOpacity } from 'react-native';
 
 type Post = {
@@ -24,8 +24,7 @@ const ProductListing: React.FC = () => {
                 const data = await Promise.all(querySnapshot.docs.map(async doc => {
                     const post = doc.data() as Post;
                     const imgUrls = await Promise.all(post.imgUrls.map(async imgPath => {
-                        const storage = getStorage();
-                        const imgRef = ref(storage, imgPath);
+                        const imgRef = ref(FIREBASE_STORAGE, imgPath);
                         const url = await getDownloadURL(imgRef);
                         return url;
                     }));
