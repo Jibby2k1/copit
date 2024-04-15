@@ -107,14 +107,20 @@ export default function App() {
         screenOptions={{ cardStyle: { backgroundColor: "black" } }}
       >
         {user ? (
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="Inside"
-            component={InsideLayout}
-            initialParams={{ user: user }} // pass the user state as a prop
-          />
+          <>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Inside"
+              component={InsideLayout}
+              initialParams={{ user: user }} // pass the user state as a prop
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="EditProfile"
+              component={EditProfile}
+              initialParams={{ user: user }} // pass the user state as a prop
+            />
+          </>
         ) : (
           <Stack.Screen
             options={{ headerShown: false }}
@@ -122,11 +128,6 @@ export default function App() {
             component={Login}
           />
         )}
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="EditProfile"
-          component={EditProfile}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   );
