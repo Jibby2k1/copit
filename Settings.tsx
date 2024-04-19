@@ -1,9 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View, Switch, TouchableOpacity, Dimensions, Alert, ScrollView} from 'react-native';
+import { FIREBASE_STORE } from './firebase';
 import { FIREBASE_AUTH } from './firebase';
+import { doc, getDoc } from 'firebase/firestore';
+
+async function getUserDataByUid(uid) {
+  const userRef = doc(FIREBASE_STORE, 'users', uid);
+  const userDoc = await getDoc(userRef);
+
+  if (userDoc.exists()) {
+    return userDoc.data();
+  } else {
+    console.log('No such user!');
+    return null;
+  }
+}
 
 const SettingsComponent = () => {
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(true);
+  const [userData, setUserData] = useState(null);
 
   const screenWidth = Dimensions.get('window').width;
   const buttonWidth = screenWidth * 0.8;
@@ -12,6 +27,16 @@ const SettingsComponent = () => {
     Alert.alert(`Edit ${section}`, 'This feature is not yet implemented.');
   };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const uid = FIREBASE_AUTH.currentUser.uid; // replace with the actual UID
+      const data = await getUserDataByUid(uid);
+      setUserData(data);
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <View style={styles.background}>
       <ScrollView>
@@ -19,11 +44,11 @@ const SettingsComponent = () => {
         <Text style={styles.sectionTitle}>Account Information</Text>
         <View style={styles.setting}>
           <Text style={styles.text}>Username</Text>
-          <Text style={styles.text}>User123</Text>
+          <Text style={styles.text}>{userData?.username || 'Loading...'}</Text>
         </View>
         <View style={styles.setting}>
           <Text style={styles.text}>Email</Text>
-          <Text style={styles.text}>user123@example.com</Text>
+          <Text style={styles.text}>{FIREBASE_AUTH.currentUser?.email || 'Loading...'}</Text>
         </View>
       </TouchableOpacity>
 

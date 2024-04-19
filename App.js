@@ -21,7 +21,7 @@ const Tab = createBottomTabNavigator();
 
 function InsideLayout({ route }) {
   const { user } = route.params; // get the user from the route params
-  
+  const [wishlist, setWishlist] = useState([]);
   return (
     <Tab.Navigator
       initialRouteName="Feed"
@@ -39,8 +39,9 @@ function InsideLayout({ route }) {
           ),
         }}
         name="SwippableImages"
-        component={SwipableImages}
-      />
+        >
+          {props => <SwipableImages {...props} setWishlist={setWishlist} />}    
+      </Tab.Screen>
       <Tab.Screen
         options={{
           headerShown: false,
@@ -62,8 +63,9 @@ function InsideLayout({ route }) {
           ),
         }}
         name="Liked"
-        component={LikedComponent}
-      />
+        >
+          {props => <LikedComponent {...props} wishlist={wishlist} setWishlist={setWishlist}/>}    
+      </Tab.Screen>
       <Tab.Screen
         options={{
           headerShown: false,

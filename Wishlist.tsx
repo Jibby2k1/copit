@@ -1,31 +1,13 @@
 import React from 'react';
-import { Text, StyleSheet, View, FlatList, TouchableOpacity  } from 'react-native';
+import { Text, StyleSheet, View, FlatList, TouchableOpacity, Image } from 'react-native';
+import data from './data';
 
-const LikedComponent = () => {
+const LikedComponent = ({ wishlist, setWishlist }) => {
   
-  const wishlist = [
-    { id: '1', name: 'Floral Dress', price: '$49.99' },
-    { id: '2', name: 'Running Shoes', price: '$85.00' },
-    { id: '3', name: 'Leather Jacket', price: '$120.00' },
-    { id: '4', name: 'Blue Jeans', price: '$39.99' },
-    { id: '5', name: 'Sweater', price: '$29.99' },
-    { id: '6', name: 'T-Shirt', price: '$14.99' },
-    { id: '7', name: 'Scarf', price: '$19.99' },
-    { id: '8', name: 'Beanie', price: '$9.99' },
-    { id: '9', name: 'Belt', price: '$24.99' },
-    { id: '10', name: 'Sunglasses', price: '$59.99' },
-    { id: '11', name: 'Watch', price: '$199.99' },
-    { id: '12', name: 'Handbag', price: '$89.99' },
-    { id: '13', name: 'High Heels', price: '$79.99' },
-    { id: '14', name: 'Swimsuit', price: '$34.99' },
-    { id: '15', name: 'Shorts', price: '$24.99' },
-    { id: '16', name: 'Hoodie', price: '$44.99' },
-    { id: '17', name: 'Socks', price: '$4.99' },
-    { id: '18', name: 'Hat', price: '$14.99' },
-    { id: '19', name: 'Gloves', price: '$19.99' },
-    { id: '20', name: 'Tie', price: '$29.99' },
-  ];
-  
+  const deleteItem = (id) => {
+    setWishlist(wishlist.filter(item => item.id !== id));
+  };
+
   return (
     <View style={styles.background}>
       <Text style={styles.title}>Wishlist</Text>
@@ -33,9 +15,10 @@ const LikedComponent = () => {
         data={wishlist}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.item}>
-            <Text style={styles.text}>{item.name}</Text>
-            <Text style={styles.text}>{item.price}</Text>
+          <TouchableOpacity style={styles.item} onPress={() => deleteItem(item.id)}>
+            <Image source={{uri: item.image}} style={styles.image} resizeMode="contain"/>
+            <Text style={styles.text}>{item.productName}</Text>
+            <Text style={styles.price} numberOfLines={1} ellipsizeMode='tail'>{item.price}</Text>
           </TouchableOpacity>
         )}
       />
@@ -52,17 +35,34 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
   },
   item: {
     backgroundColor: '#333',
     padding: 10,
     marginBottom: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+  },
+  price: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 5,
+    textAlign: 'center',
   },
   text: {
     color: 'white',
+    flexShrink: 1,
+    fontSize: 18, 
+    fontWeight: 'bold',
+    marginLeft: 5, // add some space to the left of the text
+    textAlign: 'center', // center the text
+  },
+  image: {
+    width: 100,
+    height: 100, 
   },
 });
 
