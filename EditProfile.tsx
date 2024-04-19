@@ -12,7 +12,7 @@ import {
 import { FIREBASE_STORE } from "./firebase";
 import { FIREBASE_AUTH } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
-import DocumentPicker from "react-native-document-picker";
+// import DocumentPicker from "react-native-document-picker";
 
 const EditProfile = ({ navigation }) => {
   const [imageFile, setImageFile] = useState(null);
@@ -23,28 +23,28 @@ const EditProfile = ({ navigation }) => {
     navigation.navigate("Profile");
   };
 
-  const handleFileSubmit = async () => {
-    setLoading(true);
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
-      });
-      setImageFile(res);
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log("User cancelled file picker");
-      } else {
-        console.error("Error picking file:", err);
-      }
-    }
-  };
+  // const handleFileSubmit = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await DocumentPicker.pick({
+  //       type: [DocumentPicker.types.allFiles],
+  //     });
+  //     setImageFile(res);
+  //   } catch (err) {
+  //     if (DocumentPicker.isCancel(err)) {
+  //       console.log("User cancelled file picker");
+  //     } else {
+  //       console.error("Error picking file:", err);
+  //     }
+  //   }
+  // };
 
   const handleSubmit = () => {};
 
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Text style={styles.sectionTitle}>Edit Profile</Text>
-      <Button title="Choose file" onPress={handleFileSubmit} />
+      <Button title="Choose file" onPress={() => {}} />
       <TextInput
         style={styles.input}
         multiline={true}
