@@ -8,16 +8,21 @@ import {
   ActivityIndicator,
   Button,
   View,
+  Image,
 } from "react-native";
 import { FIREBASE_STORE } from "./firebase";
 import { FIREBASE_AUTH } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
 // import DocumentPicker from "react-native-document-picker";
+import * as ImagePicker from "expo-image-picker";
+import { useRoute } from "@react-navigation/native";
 
 const EditProfile = ({ navigation }) => {
-  const [imageFile, setImageFile] = useState(null);
+  const route = useRoute();
+
   const [userBio, setUserBio] = useState("");
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(route.params.image);
 
   const handleNavigate = () => {
     navigation.navigate("Profile");
@@ -39,12 +44,53 @@ const EditProfile = ({ navigation }) => {
   //   }
   // };
 
-  const handleSubmit = () => {};
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      // update "image" state with image uri
+      setImage(result.assets[0].uri);
+    }
+
+    console.log(route.params.image);
+  };
+
+  const handleSubmit = () => {
+    // const formValues = {
+    //   image: image,
+    //   userBio: userBio,
+    // };
+
+    // We need to decide what to do with formValues
+    // Send to Firestore / Firebase to store information
+    // Update "image" and "userBio" states throughout rest of app
+
+    navigation.navigate("Profile", {
+      image: image,
+      userBio: userBio,
+    });
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container}>
+      <View style={styles.profileInfo}>
+        <Image
+          style={styles.profileImage}
+          source={{
+            uri: image,
+          }} // Replace with your profile image URL
+        />
+      </View>
       <Text style={styles.sectionTitle}>Edit Profile</Text>
-      <Button title="Choose file" onPress={() => {}} />
+      <Button title="Choose file" onPress={pickImage} />
       <TextInput
         style={styles.input}
         multiline={true}
@@ -133,6 +179,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#444444", // Grey background for input
     color: "#ffffff", // White text for input
     fontSize: 16,
+  },
+  profileImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    marginBottom: 10,
+  },
+  profileInfo: {
+    alignItems: "center",
+    marginBottom: 40,
   },
 });
 
