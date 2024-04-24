@@ -16,12 +16,12 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 // import DocumentPicker from "react-native-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { useRoute } from "@react-navigation/native";
 
 
 
 const EditProfile = ({ navigation }) => {
   const uid = FIREBASE_AUTH.currentUser?.uid;
+
   const uploadImage = async (imageUri) => {
     const storage = getStorage();
     const imageName = `profile_images/${uid}/${new Date().getTime()}`; // Unique path for each image
@@ -60,10 +60,6 @@ const EditProfile = ({ navigation }) => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
 
   useEffect(() => {
     fetchUserData();
