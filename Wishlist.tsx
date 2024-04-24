@@ -23,7 +23,7 @@ const LikedComponent = ({ wishlist, setWishlist }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.item}
-            onPress={() => deleteItem(item.id)}
+            onLongPress={() => deleteItem(item.id)}
           >
             <Image
               source={{ uri: item.image }}

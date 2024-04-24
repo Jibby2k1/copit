@@ -35,6 +35,11 @@ const SwipableImages = ({setWishlist}) => {
     });
   };
 
+  const onPress = () => {
+    // pressing on card moves into product's page
+    // navigation.navigate('Profile'); currently works, uncomment once page is set up, replace w/ profile 
+  }
+
   const CardDetails = ({ index }) => {
     return (
       <Animated.View style={styles.cardDetails} entering={BounceInUp} exiting={FadeOutDown}>
