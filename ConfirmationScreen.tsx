@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface ConfirmationScreenProps {
   route: {
@@ -19,7 +19,9 @@ const ConfirmationScreen = ({ route, navigation }: ConfirmationScreenProps) => {
     <View style={styles.container}>
       <Text style={styles.title}>Purchase Successful!</Text>
       <Text style={styles.description}>Thank you for purchasing {productName}.</Text>
-      <Button title="Go Home" onPress={() => navigation.navigate('SwippableImages')} />
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SwippableImages')}>
+        <Text style={styles.buttonText}>Back to Home</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -30,6 +32,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#121212',
   },
   title: {
     fontSize: 22,
@@ -42,6 +45,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     color: 'white',
+  },
+  button: {
+    backgroundColor: "#007BFF",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
