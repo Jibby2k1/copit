@@ -1,35 +1,43 @@
 import React from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  FlatList,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import data from "./data";
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList, ItemType } from './App';
+
+
+type WishlistNavigationProp = StackNavigationProp<RootStackParamList, 'PurchaseScreen'>;
+
+interface WishlistProps {
+  wishlist: ItemType[];  // Use the defined ItemType
+  setWishlist: (wishlist: ItemType[]) => void;
+}
 
 const LikedComponent = ({ wishlist, setWishlist }) => {
-  const deleteItem = (id) => {
-    setWishlist(wishlist.filter((item) => item.id !== id));
+  const navigation = useNavigation<WishlistNavigationProp>();
+
+  const deleteItem = (id: number) => {
+    setWishlist(wishlist.filter(item => item.id !== id));
   };
+
+  const goToPurchaseScreen = (item: any) => {
+    navigation.navigate('PurchaseScreen', { item } );
+  };
+
+  
 
   return (
     <View style={styles.background}>
       <Text style={styles.title}>Wishlist</Text>
       <FlatList
         data={wishlist}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}  // Ensure keyExtractor handles ids correctly
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.item}
+            onPress={() => goToPurchaseScreen(item)}
             onLongPress={() => deleteItem(item.id)}
           >
-            <Image
-              source={{ uri: item.image }}
-              style={styles.image}
-              resizeMode="contain"
-            />
+            <Image source={{ uri: item.image }} style={styles.image} resizeMode="contain" />
             <Text style={styles.text}>{item.productName}</Text>
             <Text style={styles.price} numberOfLines={1} ellipsizeMode="tail">
               {item.price}
@@ -40,6 +48,7 @@ const LikedComponent = ({ wishlist, setWishlist }) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   background: {
