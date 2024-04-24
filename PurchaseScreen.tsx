@@ -50,18 +50,21 @@ const PurchaseScreen = ({ route, navigation }: PurchaseScreenProps) => {
       <TextInput
         style={styles.input}
         placeholder="Full Name"
+        placeholderTextColor="#FFF"
         value={form.fullName}
         onChangeText={(text) => handleInputChange('fullName', text)}
       />
       <TextInput
         style={styles.input}
         placeholder="Address"
+        placeholderTextColor="#FFF"
         value={form.address}
         onChangeText={(text) => handleInputChange('address', text)}
       />
       <TextInput
         style={styles.input}
         placeholder="Card Number"
+        placeholderTextColor="#FFF"
         keyboardType="numeric"
         value={form.cardNumber}
         onChangeText={(text) => handleInputChange('cardNumber', text)}
@@ -69,12 +72,14 @@ const PurchaseScreen = ({ route, navigation }: PurchaseScreenProps) => {
       <TextInput
         style={styles.input}
         placeholder="Expiry Date (MM/YY)"
+        placeholderTextColor="#FFF"
         value={form.expiryDate}
         onChangeText={(text) => handleInputChange('expiryDate', text)}
       />
       <TextInput
         style={styles.input}
         placeholder="CVV"
+        placeholderTextColor="#FFF"
         keyboardType="numeric"
         value={form.cvv}
         onChangeText={(text) => handleInputChange('cvv', text)}
@@ -113,10 +118,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    height: 40,
-    marginBottom: 12,
+    width: '80%',  // 80% of the container width
+    height: 50,     // Fixed height for each input
+    backgroundColor: '#222',  // Dark input background
+    color: '#fff',  // White text color
     borderWidth: 1,
-    padding: 10,
+    borderColor: '#555',  // Dark grey border
+    borderRadius: 10,  // Rounded corners
+    padding: 10,  // Padding inside the text input
+    fontSize: 16,  // Text size
+    marginBottom: 20,  // Space between the text inputs
   },
 });
 
