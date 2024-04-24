@@ -21,11 +21,10 @@ import { useRoute } from "@react-navigation/native";
 
 
 const EditProfile = ({ navigation }) => {
-  const route = useRoute();
-
+  const uid = FIREBASE_AUTH.currentUser?.uid;
   const uploadImage = async (imageUri) => {
     const storage = getStorage();
-    const imageName = `profile_images/${route.params.user.uid}/${new Date().getTime()}`; // Unique path for each image
+    const imageName = `profile_images/${uid}/${new Date().getTime()}`; // Unique path for each image
     const storageRef = ref(storage, imageName);
 
     try {
@@ -42,28 +41,29 @@ const EditProfile = ({ navigation }) => {
 
   const [userBio, setUserBio] = useState("");
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(route.params.image || '');
-
+  const [image, setImage] = useState('');
+  const [initialImage, setInitialImage] = useState('');
+  
 
   const fetchUserData = async () => {
-    const userRef = doc(FIREBASE_STORE, "users", route.params.user.uid);
+    const userRef = doc(FIREBASE_STORE, "users", uid);
     setLoading(true);
+    const docSnap = await getDoc(userRef);
 
-    try {
-      const docSnap = await getDoc(userRef);
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        setUserBio(userData.userBio || ""); // Set userBio if exists, otherwise default to ""
-        setImage(userData.image || ""); // Set image if exists, otherwise default to ""
-      } else {
-        console.log("No such document!");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      setInitialImage(userData.img);
+      setImage(userData.img);
+      setUserBio(userData.bio);
+    } else {
+      console.log('No such document!');
     }
-
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     fetchUserData();
@@ -73,22 +73,6 @@ const EditProfile = ({ navigation }) => {
   const handleNavigate = () => {
     navigation.navigate("Profile");
   };
-
-  // const handleFileSubmit = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const res = await DocumentPicker.pick({
-  //       type: [DocumentPicker.types.allFiles],
-  //     });
-  //     setImageFile(res);
-  //   } catch (err) {
-  //     if (DocumentPicker.isCancel(err)) {
-  //       console.log("User cancelled file picker");
-  //     } else {
-  //       console.error("Error picking file:", err);
-  //     }
-  //   }
-  // };
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -105,26 +89,19 @@ const EditProfile = ({ navigation }) => {
       setImage(result.assets[0].uri);
     }
 
-    console.log(route.params.image);
   };
 
   const handleSubmit = async () => {
-    // const formValues = {
-    //   image: image,
-    //   userBio: userBio,
-    // };
-
-    // We need to decide what to do with formValues
-    // Send to Firestore / Firebase to store information
-    // Update "image" and "userBio" states throughout rest of app
-
-    const imageUrl = await uploadImage(image);
-    if (!imageUrl) {
-      console.log("Failed to upload image.");
-      return;
+    let imageUrl = initialImage;
+    if (image !== initialImage) {
+      imageUrl = await uploadImage(image);
+      if (!imageUrl) {
+        console.log("Failed to upload image.");
+        return;
+      }
     }
 
-    const userRef = doc(FIREBASE_STORE, "users", route.params.user.uid);
+    const userRef = doc(FIREBASE_STORE, "users", uid);
     try {
       await updateDoc(userRef, {
         img: imageUrl,
