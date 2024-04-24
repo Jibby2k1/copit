@@ -9,25 +9,12 @@ import {
 } from "react-native";
 import { FIREBASE_AUTH } from "./firebase";
 import { FIREBASE_STORE } from "./firebase";
-import { collection, getDoc, doc } from "firebase/firestore";
-import { useRoute } from "@react-navigation/native";
+import { getDoc, doc } from "firebase/firestore";
 
 const ProfileComponent = ({ navigation }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Add this state
-
-  const route = useRoute();
-
-  const editProfile = () => {
-    navigation.navigate("EditProfile");
-  };
-
-  const post = () => {
-    // Add the code to post here
-  };
-
   const [name, setName] = useState("");
-  const screenWidth = Dimensions.get("window").width;
-  const buttonWidth = screenWidth * 0.6;
+  const [image, setImage] = useState(null);
+  const [bio, setBio] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,7 +22,10 @@ const ProfileComponent = ({ navigation }) => {
       if (uid) {
         const userDoc = await getDoc(doc(FIREBASE_STORE, "users", uid));
         if (userDoc.exists()) {
-          setName(userDoc.data().name);
+          const userData = userDoc.data();
+          setName(userData.name);
+          setImage(userData.img);
+          setBio(userData.bio);
         }
       }
     };
@@ -43,37 +33,26 @@ const ProfileComponent = ({ navigation }) => {
     fetchUserData();
   }, []);
 
-  console.log(route.params.image);
-
   return (
     <View style={styles.background}>
       <View style={styles.profileInfo}>
         <Image
           style={styles.profileImage}
-          source={{
-            uri: route.params.image,
-          }} // Replace with your profile image URL
+          source={{ uri: image || undefined }}
         />
         <Text style={styles.profileName}>{name}</Text>
-        <Text style={styles.userBio}>{route.params.userBio}</Text>
+        <Text style={styles.userBio}>{bio}</Text>
       </View>
-
-      <TouchableOpacity onPress={editProfile} style={styles.button}>
+      <TouchableOpacity onPress={() => navigation.navigate("EditProfile")} style={styles.button}>
         <Text style={styles.buttonText}>Edit Profile</Text>
       </TouchableOpacity>
-
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Transaction History</Text>
       </TouchableOpacity>
-
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Product Listings</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => FIREBASE_AUTH.signOut()}
-      >
+      <TouchableOpacity style={styles.button} onPress={() => FIREBASE_AUTH.signOut()}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
     </View>

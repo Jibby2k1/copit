@@ -10,19 +10,65 @@ import {
   View,
   Image,
 } from "react-native";
-import { FIREBASE_STORE } from "./firebase";
+import { FIREBASE_STORE } from './firebase'; // import FIREBASE_STORE and firebase from firebase.js
 import { FIREBASE_AUTH } from "./firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 // import DocumentPicker from "react-native-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { useRoute } from "@react-navigation/native";
 
+
+
 const EditProfile = ({ navigation }) => {
   const route = useRoute();
 
+  const uploadImage = async (imageUri) => {
+    const storage = getStorage();
+    const imageName = `profile_images/${route.params.user.uid}/${new Date().getTime()}`; // Unique path for each image
+    const storageRef = ref(storage, imageName);
+
+    try {
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      let snapshot = await uploadBytes(storageRef, blob);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      return downloadURL;
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      return null;
+    }
+  };
+
   const [userBio, setUserBio] = useState("");
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(route.params.image);
+  const [image, setImage] = useState(route.params.image || '');
+
+
+  const fetchUserData = async () => {
+    const userRef = doc(FIREBASE_STORE, "users", route.params.user.uid);
+    setLoading(true);
+
+    try {
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        setUserBio(userData.userBio || ""); // Set userBio if exists, otherwise default to ""
+        setImage(userData.image || ""); // Set image if exists, otherwise default to ""
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
 
   const handleNavigate = () => {
     navigation.navigate("Profile");
@@ -56,14 +102,13 @@ const EditProfile = ({ navigation }) => {
     console.log(result);
 
     if (!result.canceled) {
-      // update "image" state with image uri
       setImage(result.assets[0].uri);
     }
 
     console.log(route.params.image);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // const formValues = {
     //   image: image,
     //   userBio: userBio,
@@ -73,10 +118,28 @@ const EditProfile = ({ navigation }) => {
     // Send to Firestore / Firebase to store information
     // Update "image" and "userBio" states throughout rest of app
 
-    navigation.navigate("Profile", {
-      image: image,
-      userBio: userBio,
-    });
+    const imageUrl = await uploadImage(image);
+    if (!imageUrl) {
+      console.log("Failed to upload image.");
+      return;
+    }
+
+    const userRef = doc(FIREBASE_STORE, "users", route.params.user.uid);
+    try {
+      await updateDoc(userRef, {
+        img: imageUrl,
+        bio: userBio
+      });
+
+      navigation.navigate("Profile", {
+        img: imageUrl,
+        bio: userBio,
+      });
+      
+      console.log("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
   return (

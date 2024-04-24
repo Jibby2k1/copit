@@ -88,6 +88,7 @@ function InsideLayout({ route }) {
         name="Profile"
         component={ProfileComponent}
         initialParams={{
+          user: user,
           image: image,
           setImage: setImage,
         }}
