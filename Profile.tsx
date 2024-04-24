@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { FIREBASE_AUTH } from "./firebase";
 import { FIREBASE_STORE } from "./firebase";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, onSnapshot } from "firebase/firestore";
 
 const ProfileComponent = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -17,20 +17,21 @@ const ProfileComponent = ({ navigation }) => {
   const [bio, setBio] = useState("");
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const uid = FIREBASE_AUTH.currentUser?.uid;
-      if (uid) {
-        const userDoc = await getDoc(doc(FIREBASE_STORE, "users", uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
+    const uid = FIREBASE_AUTH.currentUser?.uid;
+    if (uid) {
+      const userDocRef = doc(FIREBASE_STORE, "users", uid);
+      const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const userData = docSnapshot.data();
           setName(userData.name);
           setImage(userData.img);
           setBio(userData.bio);
         }
-      }
-    };
-
-    fetchUserData();
+      });
+  
+      // Clean up the subscription on unmount
+      return () => unsubscribe();
+    }
   }, []);
 
   return (
